@@ -9,6 +9,7 @@ const SENTRY_DSN = process.env.SENTRY_DSN || "";
 const S3_ENDPOINT = process.env.S3_ENDPOINT || "";
 const S3_ACCESSKEYID = process.env.S3_ACCESSKEYID || "";
 const S3_SECRETACCESSKEY = process.env.S3_SECRETACCESSKEY || "";
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
 
 const BREVO_KEY = process.env.BREVO_KEY || "";
 
@@ -23,6 +24,7 @@ const CONFIG = {
   S3_ACCESSKEYID,
   S3_SECRETACCESSKEY,
   BREVO_KEY,
+  OPENROUTER_API_KEY,
 };
 
 if (ENVIRONMENT === "development") console.log(CONFIG);

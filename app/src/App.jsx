@@ -5,6 +5,8 @@ import * as Sentry from "@sentry/browser"
 
 import Auth from "@/scenes/auth"
 import Home from "@/scenes/home"
+import Projects from "@/scenes/projects"
+import ProjectDetail from "@/scenes/projects/detail"
 
 import Navbar from "@/components/NavBar"
 import TopBar from "@/components/TopBar"
@@ -28,6 +30,8 @@ export default function App() {
         </Route>
         <Route element={<UserLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/project/:id" element={<ProjectDetail />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
@@ -82,7 +86,7 @@ const UserLayout = () => {
         <Navbar />
       </nav>
       <main className="ml-56 h-full w-full overflow-auto bg-gray-50">
-        <div className="h-14 border-b border-secondary bg-white">
+        <div className="h-14">
           <TopBar />
         </div>
         <Outlet />

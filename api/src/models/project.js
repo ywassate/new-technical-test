@@ -14,6 +14,10 @@ const Schema = new mongoose.Schema({
   description: { type: String, trim: true },
   status: { type: String, enum: ["active", "completed", "archived"], default: "active" },
 
+  // Notification tracking
+  budget_warning_sent: { type: Boolean, default: false }, // 80% warning sent
+  budget_exceeded_sent: { type: Boolean, default: false }, // 100% alert sent
+
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

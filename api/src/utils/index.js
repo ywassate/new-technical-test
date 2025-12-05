@@ -26,8 +26,6 @@ function uploadToS3FromBuffer(path, buffer, ContentType) {
   });
 }
 
-const BREVO_TEMPLATES = {};
-
 function validatePassword(password) {
   return password.length >= 6;
 }
@@ -35,5 +33,4 @@ function validatePassword(password) {
 module.exports = {
   uploadToS3FromBuffer,
   validatePassword,
-  BREVO_TEMPLATES,
 };

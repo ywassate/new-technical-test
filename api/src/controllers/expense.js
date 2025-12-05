@@ -22,11 +22,22 @@ router.post("/", passport.authenticate(["admin", "user"], { session: false }), a
     const project = await ProjectObject.findOne({ _id: project_id });
     if (!project) return res.status(404).send({ ok: false, code: "PROJECT_NOT_FOUND" });
 
+    // Auto-categorize if no category provided and description exists
+    let finalCategory = category;
+    if (!finalCategory && description) {
+      try {
+        finalCategory = await categorizeExpense(description);
+      } catch (err) {
+        console.error("Auto-categorization failed:", err);
+        // Continue without category
+      }
+    }
+
     const data = await ExpenseObject.create({
       project_id,
       project_name: project.name,
       amount,
-      category,
+      category: finalCategory,
       description,
       created_by_user_id: req.user._id,
       created_by_user_name: req.user.name,

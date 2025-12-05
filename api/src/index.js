@@ -36,6 +36,7 @@ app.use("/file", require("./controllers/file"));
 app.use("/project", require("./controllers/project"));
 app.use("/expense", require("./controllers/expense"));
 app.use("/project-member", require("./controllers/projectMember"));
+app.use("/report", require("./controllers/report"));
 app.use("/dummy", require("./controllers/dummy_controller"));
 
 setupErrorHandler(app);

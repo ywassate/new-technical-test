@@ -189,8 +189,33 @@ function AddExpenseModal({ projectId, projectName, onClose, onSuccess }) {
   const [category, setCategory] = useState("")
   const [description, setDescription] = useState("")
   const [loading, setLoading] = useState(false)
+  const [categorizing, setCategorizing] = useState(false)
 
   const categories = ["Marketing", "Développement", "Design", "Infrastructure", "RH", "Autre"]
+
+  const handleAutoCategorize = async () => {
+    if (!description.trim()) {
+      toast.error("Veuillez d'abord entrer une description")
+      return
+    }
+
+    setCategorizing(true)
+    try {
+      const { ok, data } = await API.post("/expense/categorize", {
+        description: description.trim()
+      })
+
+      if (!ok) return toast.error("Erreur lors de la catégorisation")
+
+      setCategory(data.category)
+      toast.success(`Catégorie suggérée: ${data.category}`)
+    } catch (error) {
+      console.error(error)
+      toast.error("Erreur lors de la catégorisation")
+    } finally {
+      setCategorizing(false)
+    }
+  }
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -241,22 +266,6 @@ function AddExpenseModal({ projectId, projectName, onClose, onSuccess }) {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">Catégorie</label>
-            <select
-              value={category}
-              onChange={e => setCategory(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Sélectionner...</option>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mb-6">
             <label className="block text-gray-700 font-medium mb-2">Description</label>
             <textarea
               value={description}
@@ -265,6 +274,45 @@ function AddExpenseModal({ projectId, projectName, onClose, onSuccess }) {
               placeholder="Ex: Campagne Facebook Ads Q1"
               rows="3"
             />
+          </div>
+
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <label className="block text-gray-700 font-medium">Catégorie</label>
+              <button
+                type="button"
+                onClick={handleAutoCategorize}
+                disabled={categorizing || !description.trim()}
+                className="text-xs text-purple-600 hover:text-purple-700 font-medium disabled:text-gray-400 disabled:cursor-not-allowed flex items-center gap-1"
+              >
+                {categorizing ? (
+                  <>
+                    <svg className="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Catégorisation...
+                  </>
+                ) : (
+                  <>✨ Catégoriser automatiquement</>
+                )}
+              </button>
+            </div>
+            <select
+              value={category}
+              onChange={e => setCategory(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Sélectionner ou laisser vide pour auto-catégorisation...</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              💡 Si vous laissez vide, la catégorie sera automatiquement détectée
+            </p>
           </div>
 
           <div className="flex justify-end space-x-3">
